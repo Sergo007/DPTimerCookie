@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Документация и демо таймена на куках</title>
+  </head>
+  <body>
+    <h1>ТАЙМЕР НА КУКАХ <string>нет зависимостей Jquery</string></h1>
+
+    <p>
+      <strong
+        >Очень часто на лендингах просят поднять цену спустя определенное время
+        причем обнулить таймер и так раз 4-5 автоматически и этот таймер должен
+        быть личным для каждоо зашедшего на лендинг</strong
+      >
+    </p>
+    <p>
+      Иногда лендинг приходит со стороны с уже сверстаным таймером без
+      скриптов((
+    </p>
+    <p>
+      <strong
+        >Есть возможность подключить таймер к уже существующим версткам</strong
+      >
+    </p>
+
+    <div style="display: none;" id="myTimer1">
+      <div>
+        <strong>[days2]</strong>[days1][days0] :
+        <strong>[hours1]</strong>[hours0] : <strong>[mins1]</strong>[mins0] :
+        <strong>[secs1]</strong>[secs0]
+      </div>
+    </div>
+    <div style="display: none;" id="myTimer2">
+      <div>[days] : [hours] : [mins] : [secs]</div>
+    </div>
+    <h3>Быстрый старт!!</h3>
+    <xmp>
+  <div style="display: none;" id="timerLayout1">
+    <div>[days2][days1][days0] : [hours1][hours0] : [mins1][mins0] : [secs1][secs0]</div>
+  </div>
+
+  <div style="display: none;" id="timerLayout2">
+    <div> [days] : [hours] : [mins] : [secs]</div>
+  </div>
+</xmp>
+    <xmp>
+  <script src="DPTimerCookie.js"></script>
+</xmp>
+    <xmp>
+  <script>
+    var timer = new DPTimerCookie({
+     htmLayoutIds: ['timerLayout1','timerLayout2','TIMER_ID3'],
+      displays: ['inline-block','inline-block','inline-block'],
+     lifeDurationCookieDays: 10,
+     cookieIdForTimer: 'id11111',
+     timers: [
+       {
+         duration: { // Период времени. (счет с первого захода на страницу)
+           days: 0, hours: 0, minutes: 0, seconds: 30
+         },
+         timerStarted: function () {
+           console.log("таймер 1 начал работу!!");
+         },
+         timerFinished: function () {
+           console.log("Таймер 1 закончил работу!!");
+         }
+       },
+       {
+         duration: { // Период времени. (счет по окончанию (таймер 1))
+           days: 0, hours: 0, minutes: 0, seconds: 30
+         },
+         timerStarted: function () {
+           console.log("таймер 2 начал работу!!");
+         },
+         timerFinished: function () {
+           console.log("Таймер 2 закончил работу!!");
+         }
+       }
+     ]
+   });
+  </script>
+</xmp>
+
+    <p>
+      timers[] - завести таймер на определенное время когда он отработает начнет
+      работать следующий таймер в масиве
+    </p>
+    <p>
+      htmLayoutIds: [] - масив id версток для таймера которые определены в html
+    </p>
+    <p>
+      передав id каждой верстки в htmLayoutIds и они буду работать одновременно
+      по заданным настройках в timers[]
+    </p>
+    <p>
+      если не задать парамер htmLayoutIds то таймер будет работать всеравно
+      только визуально этого не будет видно!!
+    </p>
+    <p>
+      cookieIdForTimer - если изменить то очистится кэш всех таймеров и они
+      стартанут заново
+    </p>
+    <p>В HTML мы вставляем код</p>
+    <xmp>
+<div style="display: none;" id="TIMER_ID1">
+  <div>[days2][days1][days0] : [hours1][hours0] : [mins1][mins0] : [secs1][secs0]</div>
+</div>
+</xmp>
+    <p>ПРИМЕР СОПОСТАВЛЕНИЯ !!!</p>
+    <p>
+      [days2][days1][days0] : [hours1][hours0] : [mins1][mins0] : [secs1][secs0]
+    </p>
+    <pre>
+365: 02: 15: 33
+[days] = 365; [hours] = 2;  [mins] = 15;  [secs] = 33;
+[days2] = 3; [hours1] = 0;  [mins1] = 1;  [secs1] = 3;
+[days1] = 6; [hours0] = 2;  [mins0] = 5;  [secs0] = 3;
+[days0] = 5;
+когда скрипт запустится эти переменные [days2], [days1], [days0], [hours1], [hours0], [mins1], [mins0], [secs1], [secs0]
+заменятся на числа от 0 - 9 таким образом если их подставить в класы то будут генерироваться нужные класы и дизайн таймера может быт абсолютно любым!!
+</pre
+    >
+    <xmp>
+<div style="display: none;" id="TIMER_ID1">
+  <div class="days_img_number_[days2]"></div>
+  <div class="days_img_number_[days1]"></div>
+  <div class="days_img_number_[days0]"></div>
+
+  <div class="hours_img_number_[hours1]"></div>
+  <div class="hours_img_number_[hours0]"></div>
+
+  <div class="mins_img_number_[mins1]"></div>
+  <div class="mins_img_number_[mins0]"></div>
+
+  <div class="secs_img_number_[secs1]"></div>
+  <div class="secs_img_number_[secs0]"></div>
+</div>
+</xmp>
+    <pre><strong>внутри может быть ЛЮБАЯ HTML верстка главно соблюсти ключи в квадратных скобках!!!!</strong>
+Если ивенты не нужны можно не формировать эту настройку!!
+</pre>
+    <p>
+      ПРИМЕЧАНИЕ!!! таймеры и их кеши не зависимы! Стартуют они сразу после
+      вызова конструктора!!!
+    </p>
+    <p></p>
+    <p></p>
+    <script src="DPTimerCookie.js"></script>
+    <script>
+      var timer = new DPTimerCookie({
+        htmLayoutIds: ["myTimer1", "myTimer2"],
+        displays: ["block", "block"],
+        lifeDurationCookieDays: 10,
+        cookieIdForTimer: "id1111",
+        timers: [
+          {
+            duration: {
+              days: 0,
+              hours: 0,
+              minutes: 0,
+              seconds: 30
+            },
+            timerStarted: function() {
+              console.log("таймер 1 начал работу!!");
+            },
+            timerFinished: function() {
+              console.log("Таймер 1 закончил работу!!");
+            }
+          },
+          {
+            duration: {
+              days: 0,
+              hours: 0,
+              minutes: 0,
+              seconds: 30
+            },
+            timerStarted: function() {
+              console.log("таймер 2 начал работу!!");
+            },
+            timerFinished: function() {
+              console.log("Таймер 2 закончил работу!!");
+            }
+          }
+        ]
+      });
+      timer.start();
+    </script>
+  </body>
+</html>

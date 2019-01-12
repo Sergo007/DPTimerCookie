@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8"/>
+  <title>демо таймена на куках</title>
+</head>
+<body>
+
+<div style="display: none;" id="myTimer1">
+  <div>
+    <strong>[days2]</strong>[days1][days0] :
+    <strong>[hours1]</strong>[hours0] : <strong>[mins1]</strong>[mins0] :
+    <strong>[secs1]</strong>[secs0]
+  </div>
+</div>
+<div style="display: none;" id="myTimer2">
+  <div>[days] : [hours] : [mins] : [secs]</div>
+</div>
+
+<script src="DPTimerCookie.js"></script>
+<script>
+  var timer = new DPTimerCookie({
+    htmLayoutIds: ["myTimer1", "myTimer2"],
+    displays: ["block", "block"],
+    lifeDurationCookieDays: 10,
+    cookieIdForTimer: "id11",
+    timers: [
+      {
+        duration: {
+          days: 0,
+          hours: 0,
+          minutes: 0,
+          seconds: 30
+        },
+        timerStarted: function () {
+          console.log("таймер 1 начал работу!!");
+        },
+        timerFinished: function () {
+          console.log("Таймер 1 закончил работу!!");
+        }
+      },
+      {
+        duration: {
+          days: 0,
+          hours: 0,
+          minutes: 0,
+          seconds: 30
+        },
+        timerStarted: function () {
+          console.log("таймер 2 начал работу!!");
+        },
+        timerFinished: function () {
+          console.log("Таймер 2 закончил работу!!");
+        }
+      }
+    ]
+  });
+  timer.start();
+</script>
+</body>
+</html>
