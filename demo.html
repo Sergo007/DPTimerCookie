@@ -20,8 +20,16 @@
 <script src="DPTimerCookie.js"></script>
 <script>
   var timer = new DPTimerCookie({
-    htmLayoutIds: ["myTimer1", "myTimer2"],
-    displays: ["block", "block"],
+    htmlLayouts: [
+      {
+        selector: "#myTimer1",
+        display: "block"
+      },
+      {
+        selector: "#myTimer2",
+        display: "block"
+      }
+    ],
     lifeDurationCookieDays: 10,
     cookieIdForTimer: "id11",
     timers: [

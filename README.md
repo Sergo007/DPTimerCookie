@@ -31,15 +31,34 @@
 <div style="display: none;" id="myTimer2">
   <div>[days] : [hours] : [mins] : [secs]</div>
 </div>
+<div style="display: none;" class="timer">
+  class timer
+  <div>[days] : [hours] : [mins] : [secs]</div>
+</div>
+<div style="display: none;" class="timer">
+  class timer
+  <div>[days] : [hours] : [mins] : [secs]</div>
+</div>
 
 ```
 ```html
 <script src="DPTimerCookie.js"></script>
 <script>
   var timer = new DPTimerCookie({
-    htmLayoutIds: ['myTimer1','myTimer2'], // масив id контейнеров верстки таймера
-    // показываем верстки таймера сss свойством 'display: block,inline-block,flex и тд'
-    displays: ['block','block'], // показываем верстки таймера
+    htmlLayouts: [ // масив контейнеров версток таймера на странице которые определены в html
+      {
+        selector: "#myTimer1",
+        display: "block" // показываем верстки таймера сss свойством 'display: block,inline-block,flex и тд'
+      },
+      {
+        selector: "#myTimer2",
+        display: "block"
+      },
+      {
+        selector: ".timer",
+        display: "block" // применится ко всем контейнерам найденым по селектору
+      }
+    ],
     // Время сеществования куков
     lifeDurationCookieDays: 10,
     //cookieIdForTimer - если изменить то таймеры гарантировано

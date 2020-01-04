@@ -1,75 +1,6 @@
-/**
- * ПРИМЕР ИСПОЛЬЗОВАНИЯ!!!!
- * ОБЯЗАТЕЛЬНО ВСЕ НАСТРОЙКИ ДОЛЖНЫ БЫТЬ ЗАДАНЫ!!!!!
- var timer = new DPTimerCookie({
-   htmLayoutIds: ['TIMER_ID1','TIMER_ID1','TIMER_ID3'],
-   displays: ['inline-block','inline-block','inline-block'],
-   lifeDurationCookieDays: 10,
-   cookieIdForTimer: 'id11111',
-   timers: [
-     {
-       duration: {
-         days: 0, hours: 0, minutes: 0, seconds: 30
-       },
-       timerStarted: function () {
-         console.log("таймер 1 начал работу!!");
-       },
-       timerFinished: function () {
-         console.log("Таймер 1 закончил работу!!");
-       }
-     },
-     {
-       duration: {
-         days: 0, hours: 0, minutes: 0, seconds: 30
-       },
-       timerStarted: function () {
-         console.log("таймер 2 начал работу!!");
-       },
-       timerFinished: function () {
-         console.log("Таймер 2 закончил работу!!");
-       }
-     }
-   ]
- });
- timer.start();
- timers[] - завести таймер на определенное ремя когда он отработает начнет работать следующий таймер в масиве
- htmLayoutIds: [] - масив версток для таймера которые определены в html нужно передать
- id каждой верстки и они буду работать одновременно по заданным настройках в timers[].
- если не задать парамер htmLayoutIds то таймер будет работать всеравно только визуально этого не будет видно!!
- cookieIdForTimer - если изменить то очистится кэш всех таймеров и они стартанут заново
- В HTML мы вставляем код
- <div style="display: none;" id="TIMER_ID1">
- <div>[days2][days1][days0] : [hours1][hours0] : [mins1][mins0] : [secs1][secs0]</div>
- </div>
- ПРИМЕР СОПОСТАВЛЕНИЯ !!!
- [days2][days1][days0]  : [hours1][hours0] : [mins1][mins0] : [secs1][secs0]
- 365: 02: 15: 33
- [days2] = 3; [hours1] = 0;  [mins1] = 1;  [secs1] = 3;
- [days1] = 6; [hours0] = 2;  [mins0] = 5;  [secs0] = 3;
- [days0] = 5;
- когда скрипт запустится эти переменные [days2], [days1], [days0], [hours1], [hours0], [mins1], [mins0], [secs1], [secs0]
- заменятся на числа от 0 - 9 таким образом если их подставить в класы то будут генерироваться нужные класы и дизайн таймера может быт абсолютно любым!!
- <div style="display: none;" id="TIMER_ID1">
- <div class="days_img_number_[days2]"></div>
- <div class="days_img_number_[days1]"></div>
- <div class="days_img_number_[days0]"></div>
-
- <div class="hours_img_number_[hours1]"></div>
- <div class="hours_img_number_[hours0]"></div>
-
- <div class="mins_img_number_[mins1]"></div>
- <div class="mins_img_number_[mins0]"></div>
-
- <div class="secs_img_number_[secs1]"></div>
- <div class="secs_img_number_[secs0]"></div>
- </div>
- внутри может быть ЛЮБАЯ HTML верстка главно соблюсти ключи в квадратных скобках!!!!
- Если ивенты не нужны можно не формировать эту настройку!!
- ПРИМЕЧАНИЕ!!! таймеры и их кеши не зависемы!!!
- */
-"use strict";
 function DPTimerCookie(timerSettings) {
-  var i;
+  "use strict";
+  var i, j;
   var self = this;
   function _setCookie(name, value, expires) {
     document.cookie =
@@ -121,8 +52,8 @@ function DPTimerCookie(timerSettings) {
       duration.minutes * 60 +
       duration.seconds;
     var strId = "";
-    for (i = 0; i < timerSettings.htmLayoutIds.length; i++) {
-      strId = strId + timerSettings.htmLayoutIds[i];
+    for (i = 0; i < timerSettings.htmlLayouts.length; i++) {
+      strId = strId + timerSettings.htmlLayouts[i].selector;
     }
     var date = {
       days: _getCookie(
@@ -207,16 +138,28 @@ function DPTimerCookie(timerSettings) {
   }
   var timerDOMElements = [];
   var outs = [];
-  for (i = 0; i < timerSettings.htmLayoutIds.length; i++) {
-    timerDOMElements[i] = document.getElementById(
-      timerSettings.htmLayoutIds[i]
-    );
-    if (_eqNull(timerDOMElements[i])) {
-      console.error(
-        "Верстка таймера с id=" + timerSettings.htmLayoutIds[i] + " не найдена"
-      );
+  if (!_eqNull(timerSettings.htmlLayouts)) {
+    for (i = 0; i < timerSettings.htmlLayouts.length; i++) {
+      var elements = document.querySelectorAll(timerSettings.htmlLayouts[i].selector);
+      for (j = 0; j < elements.length; j++) {
+        elements[j]['____DPTimerCookie_display'] = timerSettings.htmlLayouts[i].display;
+        timerDOMElements.push(elements[j]);
+      }
+
+      //timerDOMElements = timerDOMElements.concat(elements);
+      if (elements.length === 0) {
+        console.error(
+          "Верстка таймера с css селектором   " +
+          timerSettings.htmlLayouts[i].selector +
+          "   не найдена"
+        );
+      }
+
     }
-    outs[i] = timerDOMElements[i].innerHTML;
+
+    for (i = 0; i < timerDOMElements.length; i++) {
+      outs[i] = timerDOMElements[i].innerHTML;
+    }
   }
 
   function _Timer(duration, timerCookieId) {
@@ -239,7 +182,7 @@ function DPTimerCookie(timerSettings) {
             (dateCookie.seconds - dateNow.getSeconds())) *
           1000;
         if (amount < 0) {
-          if (!_eqNull(timerSettings.htmLayoutIds)) {
+          if (!_eqNull(timerSettings.htmlLayouts)) {
             timerKeys = [
               { key: "[days]", value: 0 },
               { key: "[days0]", value: 0 },
@@ -255,14 +198,14 @@ function DPTimerCookie(timerSettings) {
               { key: "[secs0]", value: 0 },
               { key: "[secs1]", value: 0 }
             ];
-            for (i = 0; i < timerSettings.htmLayoutIds.length; i++) {
+            for (i = 0; i < timerDOMElements.length; i++) {
               timerDOMElements[i].innerHTML = _parseHtml(outs[i], timerKeys);
             }
           }
           self.timerFinished();
           self.stop();
         } else {
-          if (!_eqNull(timerSettings.htmLayoutIds)) {
+          if (!_eqNull(timerSettings.htmlLayouts)) {
             var amount1 = Math.floor(amount / 1e3);
             var days = Math.floor(amount1 / 86400);
             var days0 = _getNumeral(days, 0);
@@ -295,14 +238,14 @@ function DPTimerCookie(timerSettings) {
               { key: "[secs0]", value: secs0 },
               { key: "[secs1]", value: secs1 }
             ];
-            for (i = 0; i < timerSettings.htmLayoutIds.length; i++) {
+            for (i = 0; i < timerDOMElements.length; i++) {
               timerDOMElements[i].innerHTML = _parseHtml(outs[i], timerKeys);
             }
           }
         }
-        if (!_eqNull(timerSettings.htmLayoutIds)) {
-          for (i = 0; i < timerSettings.htmLayoutIds.length; i++) {
-            timerDOMElements[i].style.display = timerSettings.displays[i];
+        if (!_eqNull(timerSettings.htmlLayouts)) {
+          for (i = 0; i < timerDOMElements.length; i++) {
+            timerDOMElements[i].style.display = timerDOMElements[i]['____DPTimerCookie_display'];
           }
         }
       }
